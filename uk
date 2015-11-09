@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+ver=`make --no-print-directory -C /root/kernel/hostkernel kernelversion`
+fatver=`echo $ver| sed -e 's/\./-/g' -e 's/-gentoo//'`
+make -C /root/kernel/hostkernel modules_install
+grep -q boot /proc/mounts || mount /boot
+dracut --force --noprelink --xz --kver $ver
+cp /boot/initramfs-$ver.img /boot/initramfs.img
+cp /root/kernel/hostkernel/arch/x86/boot/bzImage /boot/EFI/gentoo/$fatver
+cp /root/kernel/hostkernel/arch/x86/boot/bzImage /boot/EFI/gentoo/kernel
+umount /boot
