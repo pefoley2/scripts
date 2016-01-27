@@ -1,0 +1,3 @@
+#!/bin/bash
+sudo lsof -X -F pfn |awk '/^p/ {pid=substr($0,2)}
+    /^fDEL$/ {getline; print pid " " substr($0,2)}' | while read x; do echo -n $(ps --no-headers -o args -p `echo $x | awk '{print $1}'`); echo ' '$x;done | sort -u | egrep -v ' /dev/| /SYSV| /tmp/'
